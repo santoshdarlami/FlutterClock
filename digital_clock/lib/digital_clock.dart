@@ -4,31 +4,25 @@
 
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 enum _Element {
   background,
-  text,
-  shadow,
 }
 
 final _lightTheme = {
-  _Element.background: Color(0xFF81B3FE),
-  _Element.text: Colors.white,
-  _Element.shadow: Colors.black,
+  _Element.background: Colors.blue[100],
 };
 
 final _darkTheme = {
-  _Element.background: Colors.black,
-  _Element.text: Colors.white,
-  _Element.shadow: Color(0xFF174EA6),
+  _Element.background: Colors.blueGrey,
 };
 
-/// A basic digital clock.
-///
-/// You can do better than this!
 class DigitalClock extends StatefulWidget {
   const DigitalClock(this.model);
 
@@ -41,6 +35,7 @@ class DigitalClock extends StatefulWidget {
 class _DigitalClockState extends State<DigitalClock> {
   DateTime _dateTime = DateTime.now();
   Timer _timer;
+  String background = '';
 
   @override
   void initState() {
@@ -70,26 +65,41 @@ class _DigitalClockState extends State<DigitalClock> {
   void _updateModel() {
     setState(() {
       // Cause the clock to rebuild when the model changes.
+      switch (widget.model.weatherCondition) {
+        case WeatherCondition.cloudy:
+          background = 'third_party/cloudy.png';
+          break;
+        case WeatherCondition.foggy:
+          background = 'third_party/foggy.png';
+          break;
+        case WeatherCondition.rainy:
+          background = 'third_party/rainy.png';
+          break;
+        case WeatherCondition.snowy:
+          background = 'third_party/snowy.png';
+          break;
+        case WeatherCondition.sunny:
+          background = 'third_party/blank';
+          break;
+        case WeatherCondition.thunderstorm:
+          background = 'third_party/thunderstorm.png';
+          break;
+        case WeatherCondition.windy:
+          background = 'third_party/windy.png';
+          break;
+      }
     });
   }
 
   void _updateTime() {
     setState(() {
       _dateTime = DateTime.now();
-      // Update once per minute. If you want to update every second, use the
-      // following code.
       _timer = Timer(
         Duration(minutes: 1) -
             Duration(seconds: _dateTime.second) -
             Duration(milliseconds: _dateTime.millisecond),
         _updateTime,
       );
-      // Update once per second, but make sure to do it at the beginning of each
-      // new second, so that the clock is accurate.
-      // _timer = Timer(
-      //   Duration(seconds: 1) - Duration(milliseconds: _dateTime.millisecond),
-      //   _updateTime,
-      // );
     });
   }
 
@@ -98,36 +108,79 @@ class _DigitalClockState extends State<DigitalClock> {
     final colors = Theme.of(context).brightness == Brightness.light
         ? _lightTheme
         : _darkTheme;
+    final day = Theme.of(context).brightness == Brightness.light
+        ? 'third_party/sunny.png'
+        : 'third_party/moon.png';
     final hour =
         DateFormat(widget.model.is24HourFormat ? 'HH' : 'hh').format(_dateTime);
     final minute = DateFormat('mm').format(_dateTime);
-    final fontSize = MediaQuery.of(context).size.width / 3.5;
-    final offset = -fontSize / 7;
-    final defaultStyle = TextStyle(
-      color: colors[_Element.text],
-      fontFamily: 'PressStart2P',
-      fontSize: fontSize,
-      shadows: [
-        Shadow(
-          blurRadius: 0,
-          color: colors[_Element.shadow],
-          offset: Offset(10, 0),
-        ),
-      ],
-    );
+
+    List<String> h = hour.split('');
+    List<String> m = minute.split('');
 
     return Container(
       color: colors[_Element.background],
-      child: Center(
-        child: DefaultTextStyle(
-          style: defaultStyle,
-          child: Stack(
-            children: <Widget>[
-              Positioned(left: offset, top: 0, child: Text(hour)),
-              Positioned(right: offset, bottom: offset, child: Text(minute)),
-            ],
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            child: Container(
+              margin: EdgeInsets.only(top: 15.0),
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                day,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-        ),
+          Positioned(
+            child: Container(
+              margin: EdgeInsets.only(top: 15.0),
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                background,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  right: 10, left: 10, top: 50, bottom: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: FlareActor(
+                      "third_party/yoga_girl.flr",
+                      animation: h[0],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Expanded(
+                    child: FlareActor(
+                      "third_party/yoga_girl.flr",
+                      animation: h[1],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Expanded(
+                    child: FlareActor(
+                      "third_party/yoga_girl.flr",
+                      animation: m[0],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Expanded(
+                    child: FlareActor(
+                      "third_party/yoga_girl.flr",
+                      fit: BoxFit.cover,
+                      animation: m[1],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
