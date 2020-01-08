@@ -5,6 +5,8 @@ I would like to describe my work as a contemporary form of art which is minimali
 
 Clocks are not only used to display the time, from the early days to now clocks are used to showcase the art and the technological advancement. Clocks not only shows the current time it shows the whole era. That's why I am inspired to create this beautiful clock which will blend to the modern environment and more importantly shows the time. And also may inspired the people to stay healthy and fit ;). 
 
+The girl in the clock will poses seamlessly as the time move. 
+
 ## weather : rainy
 ## time : 01:54
 ![Screenshot_2020-01-08-13-54-07](https://user-images.githubusercontent.com/22270091/72002506-a6d5a780-326f-11ea-8da0-3676a1d358d4.png)
